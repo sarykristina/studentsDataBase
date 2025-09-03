@@ -43,6 +43,42 @@ void deleteStudent(std::vector<Student>& database) {
         std::cout << "База данных пуста. Нечего удалять.\n";
         return;
     }
+    // Показываем список студентов с номерами
+    std::cout << "Текущий список студентов:\n";
+    for (size_t i = 0; i < database.size(); i++) {
+        std::cout << i + 1 << ". " << database[i].name << "\n";
+    }
+    
+    int index;
+    std::cout << "Введите номер студента для удаления (1-" << database.size() << "): ";
+    std::cin >> index;
+    
+    // Проверяем корректность ввода
+    if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Ошибка: введите число.\n";
+        return;
+    }
+    
+    // Проверяем, что индекс в допустимом диапазоне
+    if (index < 1 || index > static_cast<int>(database.size())) {
+        std::cout << "Неверный номер студента.\n";
+        return;
+    }
+    
+    // Подтверждение удаления
+    std::string confirmation;
+    std::cout << "Вы уверены, что хотите удалить студента " << database[index-1].name << "? (y/n): ";
+    std::cin >> confirmation;
+    
+    if (confirmation == "y" || confirmation == "Y") {
+        // Удаляем студента
+        database.erase(database.begin() + index - 1);
+        std::cout << "Студент удален из базы данных.\n";
+    } else {
+        std::cout << "Удаление отменено.\n";
+    }
 }
 
 int main() {
