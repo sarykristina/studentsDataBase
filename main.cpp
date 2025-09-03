@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <limits>
 
 struct Student {
     std::string name;
@@ -33,6 +34,14 @@ void displayStudents(const std::vector<Student>& database) {
         std::cout << "Возраст: " << student.age << "\n";
         std::cout << "Специальность: " << student.major << "\n";
         std::cout << "Средний балл: " << student.gpa << "\n\n";
+    }
+}
+
+// Функция для удаления студента из базы данных
+void deleteStudent(std::vector<Student>& database) {
+    if (database.empty()) {
+        std::cout << "База данных пуста. Нечего удалять.\n";
+        return;
     }
 }
 
