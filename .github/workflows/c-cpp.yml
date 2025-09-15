@@ -1,0 +1,31 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install GoogleTest
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtest-dev cmake
+        cd /usr/src/gtest
+        sudo cmake .
+        sudo make
+        sudo cp lib/*.a /usr/lib/
+    - name: Installation
+      run: sudo apt update && sudo apt install -y build-essential
+    
+    - name: Compile
+      run: make all
+    
+    - name: Execute tests
+      run: ./program.out --test
