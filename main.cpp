@@ -1,6 +1,30 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <gtest/gtest.h>
+#include <sstream>
+
+// Тест 1: Добавление студента в базу данных
+TEST(StudentDatabaseTest, AddStudentTest) {
+    std::vector<Student> database;
+    
+    // Создаем тестового студента
+    Student testStudent;
+    testStudent.name = "Иван";
+    testStudent.age = 20;
+    testStudent.major = "Информатика";
+    testStudent.gpa = 4.5;
+    
+    // Добавляем вручную (имитируем работу addStudent)
+    database.push_back(testStudent);
+    
+    // Проверяем, что студент добавлен
+    EXPECT_EQ(database.size(), 1);
+    EXPECT_EQ(database[0].name, "Иван");
+    EXPECT_EQ(database[0].age, 20);
+    EXPECT_EQ(database[0].major, "Информатика");
+    EXPECT_EQ(database[0].gpa, 4.5);
+}
 
 struct Student {
     std::string name;
@@ -68,9 +92,7 @@ void removeStudent(std::vector<Student>& database) {
     std::cout << "Студент успешно удалён из базы данных.\n";
 }
 
-
-
-int main() {
+void runInteractiveMode() {
     std::vector<Student> database;
 
     int choice;
@@ -78,7 +100,7 @@ int main() {
         std::cout << "Меню:\n";
         std::cout << "1. Добавить студента\n";
         std::cout << "2. Вывести список студентов\n";
-        std::cout << "3. Удалить студента\n";
+        std::cout << "3. Вывести сумму всех средних баллов студентов\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
         if (!(std::cin >> choice)) {
@@ -94,8 +116,8 @@ int main() {
             case 2:
                 displayStudents(database);
                 break;
-             case 3:
-                removeStudent(database);
+            case 3:
+                display_allgpa(database);
                 break;
             case 0:
                 std::cout << "Выход из программы.\n";
@@ -104,6 +126,16 @@ int main() {
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
         }
     } while (choice != 0);
+}
 
-    return 0;
+int main(int argc, char **argv) {
+    // Если есть аргументы командной строки, запускает тесты
+    if (argc > 1) {
+        ::testing::InitGoogleTest(&argc, argv);
+        return RUN_ALL_TESTS();
+    } else {
+        // Иначе запускает интерактивное меню
+        runInteractiveMode();
+        return 0;
+    }
 }
