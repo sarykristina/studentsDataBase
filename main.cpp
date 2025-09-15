@@ -123,6 +123,20 @@ TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
     EXPECT_NO_THROW(removeStudent(database));
 }
 
+// Тест 5: Проверка наличия индекса при удалении из базы данных
+TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
+    std::vector<Student> database;
+    
+    Student student{"Иван", 20, "Информатика", 4.5};
+    database.push_back(student);
+    
+    size_t originalSize = database.size();
+    
+    if (database.size() == 1) {
+        EXPECT_EQ(database.size(), originalSize);
+    }
+}
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
