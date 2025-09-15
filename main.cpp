@@ -3,28 +3,9 @@
 #include <string>
 #include <gtest/gtest.h>
 #include <sstream>
+#include <limits>
 
-// Тест 1: Добавление студента в базу данных
-TEST(StudentDatabaseTest, AddStudentTest) {
-    std::vector<Student> database;
-    
-    // Создаем тестового студента
-    Student testStudent;
-    testStudent.name = "Иван";
-    testStudent.age = 20;
-    testStudent.major = "Информатика";
-    testStudent.gpa = 4.5;
-    
-    // Добавляем вручную (имитируем работу addStudent)
-    database.push_back(testStudent);
-    
-    // Проверяем, что студент добавлен
-    EXPECT_EQ(database.size(), 1);
-    EXPECT_EQ(database[0].name, "Иван");
-    EXPECT_EQ(database[0].age, 20);
-    EXPECT_EQ(database[0].major, "Информатика");
-    EXPECT_EQ(database[0].gpa, 4.5);
-}
+
 
 struct Student {
     std::string name;
@@ -92,6 +73,28 @@ void removeStudent(std::vector<Student>& database) {
     std::cout << "Студент успешно удалён из базы данных.\n";
 }
 
+// Тест 1: Добавление студента в базу данных
+TEST(StudentDatabaseTest, AddStudentTest) {
+    std::vector<Student> database;
+    
+    // Создаем тестового студента
+    Student testStudent;
+    testStudent.name = "Иван";
+    testStudent.age = 20;
+    testStudent.major = "Информатика";
+    testStudent.gpa = 4.5;
+    
+    // Добавляем вручную (имитируем работу addStudent)
+    database.push_back(testStudent);
+    
+    // Проверяем, что студент добавлен
+    EXPECT_EQ(database.size(), 1);
+    EXPECT_EQ(database[0].name, "Иван");
+    EXPECT_EQ(database[0].age, 20);
+    EXPECT_EQ(database[0].major, "Информатика");
+    EXPECT_EQ(database[0].gpa, 4.5);
+}
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
@@ -117,7 +120,7 @@ void runInteractiveMode() {
                 displayStudents(database);
                 break;
             case 3:
-                display_allgpa(database);
+                removeStudent(database);
                 break;
             case 0:
                 std::cout << "Выход из программы.\n";
@@ -130,7 +133,7 @@ void runInteractiveMode() {
 
 int main(int argc, char **argv) {
     // Если есть аргументы командной строки, запускает тесты
-    if (argc > 1) {
+    if (argc > 1 && std::string(argv[1]) == "--test") {
         ::testing::InitGoogleTest(&argc, argv);
         return RUN_ALL_TESTS();
     } else {
