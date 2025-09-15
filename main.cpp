@@ -83,6 +83,9 @@ int main() {
             case 2:
                 displayStudents(database);
                 break;
+             case 3:
+                removeStudent(database);
+                break;
             case 0:
                 std::cout << "Выход из программы.\n";
                 break;
