@@ -34,6 +34,7 @@ void displayStudents(const std::vector<Student>& database) {
     
     std::cout << "Список студентов:\n";
      for (size_t i = 0; i < database.size(); i++) {
+     const Student& student = database[i];
         std::cout << i + 1 << ". ";
         std::cout << "Имя: " << student.name << "\n";
         std::cout << "Возраст: " << student.age << "\n";
@@ -75,7 +76,11 @@ int main() {
         std::cout << "3. Удалить студента\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
-        std::cin >> choice;
+        if (!(std::cin >> choice)) {
+            std::cout << "Ошибка ввода! Пожалуйста, введите число.\n";
+            clearInputBuffer();
+            continue;
+        }
 
         switch (choice) {
             case 1:
