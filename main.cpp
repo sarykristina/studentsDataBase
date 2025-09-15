@@ -115,6 +115,14 @@ TEST(StudentDatabaseTest, DisplayEmptyDatabaseTest) {
     EXPECT_NO_THROW(displayStudents(database));
 }
 
+// Тест 4: Проверка работоспособности при удалении из пустой базы данных
+TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
+    std::vector<Student> database;
+    
+    // Тестируем, что функция не падает при удалении из пустой базы
+    EXPECT_NO_THROW(removeStudent(database));
+}
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
