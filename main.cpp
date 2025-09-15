@@ -9,6 +9,11 @@ struct Student {
     double gpa;
 };
 
+void clearInputBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 // Функция для добавления студента в базу данных
 void addStudent(std::vector<Student>& database) {
     Student student;
