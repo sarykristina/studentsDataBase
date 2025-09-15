@@ -5,8 +5,6 @@
 #include <sstream>
 #include <limits>
 
-
-
 struct Student {
     std::string name;
     int age;
@@ -93,6 +91,21 @@ TEST(StudentDatabaseTest, AddStudentTest) {
     EXPECT_EQ(database[0].age, 20);
     EXPECT_EQ(database[0].major, "Информатика");
     EXPECT_EQ(database[0].gpa, 4.5);
+}
+
+// Тест 2: Удаление студента
+TEST(StudentDatabaseTest, RemoveStudentTest) {
+    std::vector<Student> database;
+    
+    Student student1{"Анна", 21, "Математика", 4.7};
+    Student student2{"Петр", 22, "Физика", 4.3};
+    database.push_back(student1);
+    database.push_back(student2);
+    
+    database.erase(database.begin());
+    
+    EXPECT_EQ(database.size(), 1);
+    EXPECT_EQ(database[0].name, "Петр");
 }
 
 void runInteractiveMode() {
