@@ -42,6 +42,28 @@ void displayStudents(const std::vector<Student>& database) {
     }
 }
 
+void removeStudent(std::vector<Student>& database) {
+    if (database.empty()) {
+        std::cout << "База данных пуста. Удаление невозможно.\n";
+        return;
+    }
+
+    displayStudents(database);
+    std::cout << "Введите номер студента для удаления: ";
+    size_t index;
+    std::cin >> index;
+
+    if (index < 1 || index > database.size()) {
+        std::cout << "Ошибка: некорректный номер.\n";
+        return;
+    }
+
+    database.erase(database.begin() + (index - 1));
+    std::cout << "Студент успешно удалён из базы данных.\n";
+}
+
+
+
 int main() {
     std::vector<Student> database;
 
