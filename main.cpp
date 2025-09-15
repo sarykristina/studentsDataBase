@@ -108,6 +108,13 @@ TEST(StudentDatabaseTest, RemoveStudentTest) {
     EXPECT_EQ(database[0].name, "Петр");
 }
 
+// Тест 3: Проверка работоспособности при пустой базе данных
+TEST(StudentDatabaseTest, DisplayEmptyDatabaseTest) {
+    std::vector<Student> database;
+    
+    EXPECT_NO_THROW(displayStudents(database));
+}
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
