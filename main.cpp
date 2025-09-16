@@ -237,6 +237,44 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
     EXPECT_TRUE(output.find("Ошибка ввода") != std::string::npos);
 }
 
+// Тест 9: Тестирование обработки ошибок ввода в меню
+TEST(StudentDatabaseTest, MenuInputErrorTest) {
+    // Сохраняем оригинальный буфер
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем тестовый ввод
+    std::istringstream test_input("abc\n1\n0\n");
+    std::cin.rdbuf(test_input.rdbuf());
+    
+    testing::internal::CaptureStdout();
+    
+    int choice;
+    do {
+        if (!(std::cin >> choice)) {
+            std::cout << "Ошибка ввода! Пожалуйста, введите число.\n";
+            clearInputBuffer();
+            continue;
+        }
+        
+        if (choice == 0) {
+            std::cout << "Выход из программы.\n";
+            break;
+        }
+        
+        std::cout << "Выбран пункт: " << choice << "\n";
+        
+    } while (true);
+    
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    // Восстанавливаем оригинальный буфер
+    std::cin.rdbuf(orig_cin);
+    
+    EXPECT_TRUE(output.find("Ошибка ввода") != std::string::npos);
+    EXPECT_TRUE(output.find("Выбран пункт: 1") != std::string::npos);
+}
+
+
 
 void runInteractiveMode() {
     std::vector<Student> database;
