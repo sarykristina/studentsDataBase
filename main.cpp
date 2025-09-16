@@ -119,12 +119,17 @@ TEST(StudentDatabaseTest, DisplayEmptyDatabaseTest) {
     EXPECT_TRUE(output.find("База данных пуста") != std::string::npos);
 }
 
-// Тест 4: Проверка работоспособности при удалении из пустой базы данных
-TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
+// Тест 4: Отображение непустой базы данных
+TEST(StudentDatabaseTest, DisplayNonEmptyDatabaseTest) {
     std::vector<Student> database;
+    database.push_back({"Иван", 20, "Информатика", 4.5});
     
-    // Тестируем, что функция не падает при удалении из пустой базы
-    EXPECT_NO_THROW(removeStudent(database));
+    testing::internal::CaptureStdout();
+    displayStudents(database);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    EXPECT_TRUE(output.find("Иван") != std::string::npos);
+    EXPECT_TRUE(output.find("Информатика") != std::string::npos);
 }
 
 // Тест 5: Проверка наличия индекса при удалении из базы данных
