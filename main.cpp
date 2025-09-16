@@ -200,6 +200,44 @@ TEST(StudentDatabaseTest, RemoveValidIndexTest) {
     EXPECT_EQ(database[0].name, "Анна");
 }
 
+// Тест 8: Тестирование обработки неверного выбора в меню
+TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
+    // Сохраняем оригинальный буфер
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем тестовый ввод
+    std::istringstream test_input("999\n0\n");
+    std::cin.rdbuf(test_input.rdbuf());
+    
+    testing::internal::CaptureStdout();
+    
+    // Запускаем упрощенную версию меню для теста
+    int choice;
+    do {
+        if (!(std::cin >> choice)) {
+            std::cout << "Ошибка ввода! Пожалуйста, введите число.\n";
+            clearInputBuffer();
+            continue;
+        }
+        
+        if (choice == 0) {
+            std::cout << "Выход из программы.\n";
+            break;
+        } else {
+            std::cout << "Неверный выбор. Попробуйте снова.\n";
+        }
+    } while (true);
+    
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    // Восстанавливаем оригинальный буфер
+    std::cin.rdbuf(orig_cin);
+    
+    EXPECT_TRUE(output.find("Неверный выбор") != std::string::npos);
+    EXPECT_TRUE(output.find("Ошибка ввода") != std::string::npos);
+}
+
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
