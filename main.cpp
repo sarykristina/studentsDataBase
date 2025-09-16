@@ -108,11 +108,15 @@ TEST(StudentDatabaseTest, RemoveStudentTest) {
     EXPECT_EQ(database[0].name, "Петр");
 }
 
-// Тест 3: Проверка работоспособности при пустой базе данных
+// Тест 3: Отображение пустой базы данных
 TEST(StudentDatabaseTest, DisplayEmptyDatabaseTest) {
     std::vector<Student> database;
     
-    EXPECT_NO_THROW(displayStudents(database));
+    testing::internal::CaptureStdout();
+    displayStudents(database);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    EXPECT_TRUE(output.find("База данных пуста") != std::string::npos);
 }
 
 // Тест 4: Проверка работоспособности при удалении из пустой базы данных
