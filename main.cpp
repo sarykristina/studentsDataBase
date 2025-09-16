@@ -146,6 +146,18 @@ TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
     }
 }
 
+// Тест 6: Удаление из пустой базы данных
+TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
+    std::vector<Student> database;
+    
+    testing::internal::CaptureStdout();
+    removeStudent(database);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    EXPECT_TRUE(output.find("База данных пуста") != std::string::npos);
+}
+
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
