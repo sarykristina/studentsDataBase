@@ -157,6 +157,38 @@ TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
     EXPECT_TRUE(output.find("База данных пуста") != std::string::npos);
 }
 
+// Тест 7: Удаление с некорректным индексом
+TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
+    std::vector<Student> database;
+    database.push_back({"Иван", 20, "Информатика", 4.5});
+    
+    // Сохраняем оригинальный размер
+    size_t originalSize = database.size();
+    
+    // Создаем строку с неверным вводом и передаем в stringstream
+    std::string invalid_input = "999\n";
+    std::istringstream test_input(invalid_input);
+    
+    // Сохраняем оригинальный буфер
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Подменяем cin
+    std::cin.rdbuf(test_input.rdbuf());
+    
+    testing::internal::CaptureStdout();
+    removeStudent(database);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    // Восстанавливаем cin
+    std::cin.rdbuf(orig_cin);
+    
+    // Очищаем флаги ошибок cin
+    std::cin.clear();
+    
+    EXPECT_TRUE(output.find("Ошибка: некорректный номер") != std::string::npos);
+    EXPECT_EQ(database.size(), originalSize); // Размер не должен измениться
+}
+
 void runInteractiveMode() {
     std::vector<Student> database;
 
