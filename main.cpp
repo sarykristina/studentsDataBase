@@ -132,21 +132,7 @@ TEST(StudentDatabaseTest, DisplayNonEmptyDatabaseTest) {
     EXPECT_TRUE(output.find("Информатика") != std::string::npos);
 }
 
-// Тест 5: Проверка наличия индекса при удалении из базы данных
-TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
-    std::vector<Student> database;
-    
-    Student student{"Иван", 20, "Информатика", 4.5};
-    database.push_back(student);
-    
-    size_t originalSize = database.size();
-    
-    if (database.size() == 1) {
-        EXPECT_EQ(database.size(), originalSize);
-    }
-}
-
-// Тест 6: Удаление из пустой базы данных
+// Тест 5: Удаление из пустой базы данных
 TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
     std::vector<Student> database;
     
@@ -157,7 +143,7 @@ TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
     EXPECT_TRUE(output.find("База данных пуста") != std::string::npos);
 }
 
-// Тест 7: Удаление с некорректным индексом
+// Тест 6: Удаление с некорректным индексом
 TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
     std::vector<Student> database;
     database.push_back({"Иван", 20, "Информатика", 4.5});
@@ -187,6 +173,31 @@ TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
     
     EXPECT_TRUE(output.find("Ошибка: некорректный номер") != std::string::npos);
     EXPECT_EQ(database.size(), originalSize); // Размер не должен измениться
+}
+
+// Тест 7: Удаление с корректным индексом
+TEST(StudentDatabaseTest, RemoveValidIndexTest) {
+    std::vector<Student> database;
+    database.push_back({"Иван", 20, "Информатика", 4.5});
+    database.push_back({"Анна", 21, "Математика", 4.7});
+    
+    // Сохраняем оригинальный буфер ввода
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем тестовый ввод
+    std::istringstream test_input("1\n");
+    std::cin.rdbuf(test_input.rdbuf());
+    
+    testing::internal::CaptureStdout();
+    removeStudent(database);
+    std::string output = testing::internal::GetCapturedStdout();
+    
+    // Восстанавливаем оригинальный буфер
+    std::cin.rdbuf(orig_cin);
+    
+    EXPECT_TRUE(output.find("удалён") != std::string::npos);
+    EXPECT_EQ(database.size(), 1);
+    EXPECT_EQ(database[0].name, "Анна");
 }
 
 void runInteractiveMode() {
