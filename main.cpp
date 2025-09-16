@@ -205,7 +205,7 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
     // Сохраняем оригинальный буфер
     std::streambuf* orig_cin = std::cin.rdbuf();
     
-    // Создаем тестовый ввод
+    // Создаем тестовый ввод: сначала неверный выбор (999), потом выход (0)
     std::istringstream test_input("999\n0\n");
     std::cin.rdbuf(test_input.rdbuf());
     
@@ -213,9 +213,13 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
     
     // Запускаем упрощенную версию меню для теста
     int choice;
+    bool had_invalid_choice = false;
+    bool had_input_error = false;
+    
     do {
         if (!(std::cin >> choice)) {
             std::cout << "Ошибка ввода! Пожалуйста, введите число.\n";
+            had_input_error = true;
             clearInputBuffer();
             continue;
         }
@@ -223,8 +227,11 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
         if (choice == 0) {
             std::cout << "Выход из программы.\n";
             break;
+        } else if (choice == 1 || choice == 2 || choice == 3) {
+            std::cout << "Выбран пункт: " << choice << "\n";
         } else {
             std::cout << "Неверный выбор. Попробуйте снова.\n";
+            had_invalid_choice = true;
         }
     } while (true);
     
@@ -232,9 +239,14 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
     
     // Восстанавливаем оригинальный буфер
     std::cin.rdbuf(orig_cin);
+    std::cin.clear();
     
+    // Проверяем, что было сообщение о неверном выборе
+    EXPECT_TRUE(had_invalid_choice);
     EXPECT_TRUE(output.find("Неверный выбор") != std::string::npos);
-    EXPECT_TRUE(output.find("Ошибка ввода") != std::string::npos);
+    
+    // В этом тесте НЕ должно быть ошибки ввода, так как мы вводим числа
+    EXPECT_FALSE(had_input_error);
 }
 
 // Тест 9: Тестирование обработки ошибок ввода в меню
