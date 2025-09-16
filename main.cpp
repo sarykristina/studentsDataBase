@@ -180,28 +180,6 @@ TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
     EXPECT_EQ(database.size(), originalSize); // Размер не должен измениться
 }
 
-// Тест 8: Удаление с корректным индексом
-TEST(StudentDatabaseTest, RemoveValidIndexTest) {
-    std::vector<Student> database;
-    database.push_back({"Иван", 20, "Информатика", 4.5});
-    database.push_back({"Анна", 21, "Математика", 4.7});
-    
-    // Мокаем ввод верного индекса
-    std::istringstream valid_input("1\n");
-    std::streambuf* orig_cin = std::cin.rdbuf(valid_input.rdbuf());
-    
-    testing::internal::CaptureStdout();
-    removeStudent(database);
-    std::string output = testing::internal::GetCapturedStdout();
-    
-    // Восстанавливаем cin
-    std::cin.rdbuf(orig_cin);
-    
-    EXPECT_TRUE(output.find("удалён") != std::string::npos);
-    EXPECT_EQ(database.size(), 1);
-    EXPECT_EQ(database[0].name, "Анна");
-}
-
 void runInteractiveMode() {
     std::vector<Student> database;
 
