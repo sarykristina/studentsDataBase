@@ -31,7 +31,6 @@ jobs:
       run: ./program.out --test
       
     # Шаг 5: Переустановка GTest и УСТАНОВКА GCOVR.
-    # Ключевой шаг! Без gcovr мы не сможем сгенерировать отчет.
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -41,48 +40,37 @@ jobs:
     # Шаг 6: Сборка с покрытием, запуск тестов и генерация XML-отчета.
     - name: Build, test and generate coverage
       run: |
-        # Компилирует с флагами для coverage
         g++ -std=c++17 --coverage -o program.out main.cpp -lgtest -lgtest_main -pthread
-        # Запускает тесты (на собранной с coverage версии)
+        # Запускает тесты 
         ./program.out --test
-        # Генерирует отчет в формате Cobertura XML с помощью gcovr
         gcovr --xml coverage.cobertura.xml
 
     # Шаг 7: Парсинг XML и определение цвета.
     - name: Extract coverage percentage
       id: coverage # Уникальный id этого шага, чтобы использовать его результаты позже.
       run: |
-        # Магия парсинга: ищет в XML атрибут line-rate, извлекает число, умножает на 100.
         COVERAGE=$(grep -o 'line-rate="[0-9.]*"' coverage.cobertura.xml | head -1 | grep -o '[0-9.]*' | awk '{print int($1*100)}')
-        # Защита от сбоев: если значение пустое, ставим 0.
         if [ -z "$COVERAGE" ]; then COVERAGE=0; fi
-        # Сохраняем результат в выходную переменную 'percentage'.
         echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
 
-        # Логика определения цвета на основе полученного процента.
+        #определения цвета
         if [ "$COVERAGE" -ge 90 ]; then COLOR="brightgreen"
         elif [ "$COVERAGE" -ge 80 ]; then COLOR="green"
         elif [ "$COVERAGE" -ge 70 ]; then COLOR="yellowgreen"
         elif [ "$COVERAGE" -ge 60 ]; then COLOR="yellow"
         else COLOR="red"; fi
-        # Сохраняем цвет в выходную переменную 'color'.
         echo "color=$COLOR" >> $GITHUB_OUTPUT
 
-        # Вывод в лог для отладки.
         echo "Coverage: $COVERAGE% (Color: $COLOR)"
 
     # Шаг 8: Обновление Gist с помощью специального Action.
     - name: Update coverage badge in README
       uses: schneegans/dynamic-badges-action@v1.0.0 # Инструмент для обновления Gist.
       with:
-        # Берем токен из секретов репозитория. Это наш "ключ" для записи.
         auth: ${{ secrets.GIST_TOKEN }}
-        # Берем ID Gist из секретов, чтобы знать, куда писать.
         gistID: ${{ secrets.GIST_ID }}
-        # Имя файла в Gist, который мы будем обновлять.
         filename: coverage.json
-        # Текст на бейдже. Берем процент из шага с id='coverage'.
         label: Test coverage
         message: ${{ steps.coverage.outputs.percentage }}%
-        # Цвет бейджа. Берем цвет из шага с id='coverage'.
+        # Цвет бейджа.
         color: ${{ steps.coverage.outputs.color }}
