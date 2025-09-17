@@ -75,17 +75,14 @@ void removeStudent(std::vector<Student>& database) {
 TEST(StudentDatabaseTest, AddStudentTest) {
     std::vector<Student> database;
     
-    // Создаем тестового студента
     Student testStudent;
     testStudent.name = "Иван";
     testStudent.age = 20;
     testStudent.major = "Информатика";
     testStudent.gpa = 4.5;
     
-    // Добавляем вручную (имитируем работу addStudent)
     database.push_back(testStudent);
     
-    // Проверяем, что студент добавлен
     EXPECT_EQ(database.size(), 1);
     EXPECT_EQ(database[0].name, "Иван");
     EXPECT_EQ(database[0].age, 20);
@@ -147,28 +144,22 @@ TEST(StudentDatabaseTest, RemoveFromEmptyDatabaseTest) {
 TEST(StudentDatabaseTest, RemoveInvalidIndexTest) {
     std::vector<Student> database;
     database.push_back({"Иван", 20, "Информатика", 4.5});
-    
-    // Сохраняем оригинальный размер
+
     size_t originalSize = database.size();
-    
-    // Создаем строку с неверным вводом и передаем в stringstream
+
     std::string invalid_input = "999\n";
     std::istringstream test_input(invalid_input);
-    
-    // Сохраняем оригинальный буфер
+
     std::streambuf* orig_cin = std::cin.rdbuf();
-    
-    // Подменяем cin
+
     std::cin.rdbuf(test_input.rdbuf());
     
     testing::internal::CaptureStdout();
     removeStudent(database);
     std::string output = testing::internal::GetCapturedStdout();
-    
-    // Восстанавливаем cin
+
     std::cin.rdbuf(orig_cin);
     
-    // Очищаем флаги ошибок cin
     std::cin.clear();
     
     EXPECT_TRUE(output.find("Ошибка: некорректный номер") != std::string::npos);
@@ -181,18 +172,15 @@ TEST(StudentDatabaseTest, RemoveValidIndexTest) {
     database.push_back({"Иван", 20, "Информатика", 4.5});
     database.push_back({"Анна", 21, "Математика", 4.7});
     
-    // Сохраняем оригинальный буфер ввода
     std::streambuf* orig_cin = std::cin.rdbuf();
-    
-    // Создаем тестовый ввод
+
     std::istringstream test_input("1\n");
     std::cin.rdbuf(test_input.rdbuf());
     
     testing::internal::CaptureStdout();
     removeStudent(database);
     std::string output = testing::internal::GetCapturedStdout();
-    
-    // Восстанавливаем оригинальный буфер
+
     std::cin.rdbuf(orig_cin);
     
     EXPECT_TRUE(output.find("удалён") != std::string::npos);
@@ -202,16 +190,13 @@ TEST(StudentDatabaseTest, RemoveValidIndexTest) {
 
 // Тест 8: Тестирование обработки неверного выбора в меню
 TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
-    // Сохраняем оригинальный буфер
     std::streambuf* orig_cin = std::cin.rdbuf();
     
-    // Создаем тестовый ввод: сначала неверный выбор (999), потом выход (0)
     std::istringstream test_input("999\n0\n");
     std::cin.rdbuf(test_input.rdbuf());
     
     testing::internal::CaptureStdout();
     
-    // Запускаем упрощенную версию меню для теста
     int choice;
     bool had_invalid_choice = false;
     bool had_input_error = false;
@@ -236,25 +221,20 @@ TEST(StudentDatabaseTest, InvalidMenuChoiceTest) {
     } while (true);
     
     std::string output = testing::internal::GetCapturedStdout();
-    
-    // Восстанавливаем оригинальный буфер
+
     std::cin.rdbuf(orig_cin);
     std::cin.clear();
-    
-    // Проверяем, что было сообщение о неверном выборе
+
     EXPECT_TRUE(had_invalid_choice);
     EXPECT_TRUE(output.find("Неверный выбор") != std::string::npos);
-    
-    // В этом тесте НЕ должно быть ошибки ввода, так как мы вводим числа
+
     EXPECT_FALSE(had_input_error);
 }
 
 // Тест 9: Тестирование обработки ошибок ввода в меню
 TEST(StudentDatabaseTest, MenuInputErrorTest) {
-    // Сохраняем оригинальный буфер
     std::streambuf* orig_cin = std::cin.rdbuf();
     
-    // Создаем тестовый ввод
     std::istringstream test_input("abc\n1\n0\n");
     std::cin.rdbuf(test_input.rdbuf());
     
@@ -278,15 +258,12 @@ TEST(StudentDatabaseTest, MenuInputErrorTest) {
     } while (true);
     
     std::string output = testing::internal::GetCapturedStdout();
-    
-    // Восстанавливаем оригинальный буфер
+
     std::cin.rdbuf(orig_cin);
     
     EXPECT_TRUE(output.find("Ошибка ввода") != std::string::npos);
     EXPECT_TRUE(output.find("Выбран пункт: 1") != std::string::npos);
 }
-
-
 
 void runInteractiveMode() {
     std::vector<Student> database;
